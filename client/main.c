@@ -17,7 +17,7 @@
 
 
 int CHUNK_SIZE = 64;
-int BUFFER_SIZE = 1024;
+int READ_BUFFER_SIZE = 1024;
 
 // socket读取缓冲
 char buffer[1024+1];
@@ -58,6 +58,9 @@ int main(int argc, const char * argv[]) {
     
     if (n < 0)
         error("read error");
+    
+    if(close(socketfd) < 0)
+        error("close error");
 
     getchar();
     
