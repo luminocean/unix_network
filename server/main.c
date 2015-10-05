@@ -14,10 +14,21 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include "util.h"
-#include "net.h"
+#include "system.h"
 
 int BUFFER_LENGTH = 1024;
 int QUEUE_LEN = 10;
+
+/// 服务器端处理函数
+void
+server_process(int socketfd){
+    char buff[BUFFER_LENGTH];
+    
+    // 写入时间响应
+    time_t ticks = time(NULL);
+    snprintf(buff, sizeof(buff), "%.24s\r\n", ctime(&ticks));
+    Write(socketfd, buff, strlen(buff));
+}
 
 int main(int argc, char* argv[]){
     struct sockaddr_in socket_addr;
@@ -28,28 +39,32 @@ int main(int argc, char* argv[]){
     socket_addr.sin_port        = htons(8124);
     
     // 创建socket
-    int socket_fd = Socket(AF_INET, SOCK_STREAM, 0);
+    int listen_fd = Socket(AF_INET, SOCK_STREAM, 0);
     // 绑定到本地地址
-    Bind(socket_fd, (const struct sockaddr*) &socket_addr, sizeof(socket_addr));
+    Bind(listen_fd, (const struct sockaddr*) &socket_addr, sizeof(socket_addr));
     // 开始监听
-    Listen(socket_fd, QUEUE_LEN);
+    Listen(listen_fd, QUEUE_LEN);
     
     puts("Server launched");
     
     int connect_fd = 0;
-    char buff[BUFFER_LENGTH];
     while(1){
         // 接收请求
-        connect_fd = Accept(socket_fd, (struct sockaddr *)NULL, NULL);
+        connect_fd = Accept(listen_fd, (struct sockaddr *)NULL, NULL);
         puts("Connected");
         
-        // 写入时间相应
-        time_t ticks = time(NULL);
-        snprintf(buff, sizeof(buff), "%.24s\r\n", ctime(&ticks));
-        Write(connect_fd, buff, strlen(buff));
-        
-        // 写入完毕，关掉socket
-        Close(connect_fd);
-        puts("Connection closed");
+        pid_t child_id = 0;
+        if( (child_id = Fork()) == 0 ){
+            Close(listen_fd); // 子进程用不到监听socket，直接关掉，减少引用计数
+            // 服务器端处理
+            server_process(connect_fd);
+            // 处理完关闭
+            Close(connect_fd);
+            
+            puts("Connection closed");
+            exit(0); // 子进程完成后退出
+        }else{
+            Close(connect_fd); // 新建的socket连接交给子进程处理，父进程这里直接关闭
+        }
     }
 }

@@ -8,9 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		7037553F1BC21F7400DFFFC5 /* read.c in Sources */ = {isa = PBXBuildFile; fileRef = 70D505A51BBD138D0006FD78 /* read.c */; settings = {ASSET_TAGS = (); }; };
-		703755431BC220B800DFFFC5 /* net.c in Sources */ = {isa = PBXBuildFile; fileRef = 703755401BC21FC200DFFFC5 /* net.c */; settings = {ASSET_TAGS = (); }; };
-		703755441BC220B800DFFFC5 /* net.c in Sources */ = {isa = PBXBuildFile; fileRef = 703755401BC21FC200DFFFC5 /* net.c */; settings = {ASSET_TAGS = (); }; };
-		703755451BC220B900DFFFC5 /* net.c in Sources */ = {isa = PBXBuildFile; fileRef = 703755401BC21FC200DFFFC5 /* net.c */; settings = {ASSET_TAGS = (); }; };
+		703755431BC220B800DFFFC5 /* system.c in Sources */ = {isa = PBXBuildFile; fileRef = 703755401BC21FC200DFFFC5 /* system.c */; settings = {ASSET_TAGS = (); }; };
+		703755441BC220B800DFFFC5 /* system.c in Sources */ = {isa = PBXBuildFile; fileRef = 703755401BC21FC200DFFFC5 /* system.c */; settings = {ASSET_TAGS = (); }; };
+		703755451BC220B900DFFFC5 /* system.c in Sources */ = {isa = PBXBuildFile; fileRef = 703755401BC21FC200DFFFC5 /* system.c */; settings = {ASSET_TAGS = (); }; };
 		70D505A71BBD138D0006FD78 /* read.c in Sources */ = {isa = PBXBuildFile; fileRef = 70D505A51BBD138D0006FD78 /* read.c */; settings = {ASSET_TAGS = (); }; };
 		70D505B31BBD20FC0006FD78 /* read.c in Sources */ = {isa = PBXBuildFile; fileRef = 70D505A51BBD138D0006FD78 /* read.c */; settings = {ASSET_TAGS = (); }; };
 		70D505B41BBD228A0006FD78 /* util.c in Sources */ = {isa = PBXBuildFile; fileRef = 70EDB62C1BBAA4A30081F327 /* util.c */; settings = {ASSET_TAGS = (); }; };
@@ -71,8 +71,8 @@
 /* Begin PBXFileReference section */
 		7037552D1BC21ED100DFFFC5 /* net */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = net; sourceTree = BUILT_PRODUCTS_DIR; };
 		703755381BC21F5700DFFFC5 /* common */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = common; sourceTree = BUILT_PRODUCTS_DIR; };
-		703755401BC21FC200DFFFC5 /* net.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = net.c; sourceTree = "<group>"; };
-		703755411BC21FC200DFFFC5 /* net.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = net.h; sourceTree = "<group>"; };
+		703755401BC21FC200DFFFC5 /* system.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = system.c; sourceTree = "<group>"; };
+		703755411BC21FC200DFFFC5 /* system.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = system.h; sourceTree = "<group>"; };
 		70D505A51BBD138D0006FD78 /* read.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = read.c; path = ../client/read.c; sourceTree = "<group>"; };
 		70D505A61BBD138D0006FD78 /* read.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = read.h; path = ../client/read.h; sourceTree = "<group>"; };
 		70D505AC1BBD20F70006FD78 /* test */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = test; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -130,8 +130,8 @@
 				70EDB62D1BBAA4A30081F327 /* util.h */,
 				70D505A51BBD138D0006FD78 /* read.c */,
 				70D505A61BBD138D0006FD78 /* read.h */,
-				703755401BC21FC200DFFFC5 /* net.c */,
-				703755411BC21FC200DFFFC5 /* net.h */,
+				703755401BC21FC200DFFFC5 /* system.c */,
+				703755411BC21FC200DFFFC5 /* system.h */,
 			);
 			path = common;
 			sourceTree = "<group>";
@@ -327,7 +327,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				703755451BC220B900DFFFC5 /* net.c in Sources */,
+				703755451BC220B900DFFFC5 /* system.c in Sources */,
 				70D505B31BBD20FC0006FD78 /* read.c in Sources */,
 				70D505B41BBD228A0006FD78 /* util.c in Sources */,
 			);
@@ -338,7 +338,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				70EDB6281BBAA4700081F327 /* main.c in Sources */,
-				703755431BC220B800DFFFC5 /* net.c in Sources */,
+				703755431BC220B800DFFFC5 /* system.c in Sources */,
 				70EDB62E1BBAA4A30081F327 /* util.c in Sources */,
 				70D505A71BBD138D0006FD78 /* read.c in Sources */,
 			);
@@ -349,7 +349,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				70EDB6361BBAA4B90081F327 /* main.c in Sources */,
-				703755441BC220B800DFFFC5 /* net.c in Sources */,
+				703755441BC220B800DFFFC5 /* system.c in Sources */,
 				70EDB63A1BBAA61C0081F327 /* util.c in Sources */,
 				7037553F1BC21F7400DFFFC5 /* read.c in Sources */,
 			);
@@ -775,6 +775,7 @@
 				703755321BC21ED100DFFFC5 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		7037553C1BC21F5700DFFFC5 /* Build configuration list for PBXNativeTarget "common" */ = {
 			isa = XCConfigurationList;
@@ -783,6 +784,7 @@
 				7037553E1BC21F5700DFFFC5 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		70D505B01BBD20F70006FD78 /* Build configuration list for PBXNativeTarget "test" */ = {
 			isa = XCConfigurationList;

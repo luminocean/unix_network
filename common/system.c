@@ -7,8 +7,9 @@
 //
 
 #include <unistd.h>
+#include <errno.h>
 #include <sys/socket.h>
-#include "net.h"
+#include "system.h"
 #include "util.h"
 
 int
@@ -67,17 +68,31 @@ Accept(int socket, struct sockaddr *restrict address,
        socklen_t *restrict address_len){
     
     int fd = 0;
-    if( (fd = accept(socket, address, address_len)) < 0){
-        error("accept error");
+    while(1){
+        if( (fd = accept(socket, address, address_len)) < 0){
+            if(errno == EINTR)
+                continue;
+            
+            error("accept error");
+        }
+        
+        return fd;
     }
-    
-    return fd;
 }
 
 void
 Close(int fildes){
     if(close(fildes) < 0)
         error("close error");
+}
+
+pid_t
+Fork(){
+    pid_t child_id = fork();
+    if(child_id < 0)
+        error("fork error");
+    
+    return child_id;
 }
 
 

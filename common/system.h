@@ -53,5 +53,9 @@ Accept(int socket, struct sockaddr *restrict address,
 void
 Close(int fildes);
 
+/// fork进程
+pid_t
+Fork();
+
 
 #endif /* net_h */
