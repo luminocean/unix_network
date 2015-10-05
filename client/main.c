@@ -36,14 +36,18 @@ int main(int argc, const char * argv[]) {
     if (inet_pton(AF_INET, argv[1], &socket_addr.sin_addr) <= 0)
         error("IP address error");
     
-    
     /// 创建一个[网际][字节流]socket，得到一个文件描述符
     int socketfd = Socket(AF_INET, SOCK_STREAM, 0);
     
     // 使用socket和地址建立tcp连接，之后套接字描述符就可以使用read读取
     Connect(socketfd, (const struct sockaddr*)&socket_addr, sizeof(socket_addr));
     
+    // 获取连接后本地socket的IP和端口信息
+    char addr_buffer[ADDR_PAIR_LEN];
+    get_local_socket_info(socketfd, addr_buffer, sizeof(addr_buffer));
+    
     puts("Connected to server");
+    printf("Local address is %s\n", addr_buffer);
     
     // 使用socket读取
     ssize_t n = 0;

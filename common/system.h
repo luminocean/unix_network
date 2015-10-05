@@ -49,6 +49,16 @@ int
 Accept(int socket, struct sockaddr *restrict address,
        socklen_t *restrict address_len);
 
+/// 获取对面socket的信息
+void
+Getsockname(int socket, struct sockaddr *restrict address,
+            socklen_t *restrict address_len);
+
+/// 获取对面socket的信息
+void
+Getpeername(int socket, struct sockaddr *restrict address,
+            socklen_t *restrict address_len);
+
 /// 关闭指定socket
 void
 Close(int fildes);

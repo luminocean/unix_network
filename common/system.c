@@ -68,6 +68,8 @@ Accept(int socket, struct sockaddr *restrict address,
        socklen_t *restrict address_len){
     
     int fd = 0;
+    
+    // 这是为了防御中断错误，如果发生则自动重来
     while(1){
         if( (fd = accept(socket, address, address_len)) < 0){
             if(errno == EINTR)
@@ -78,6 +80,20 @@ Accept(int socket, struct sockaddr *restrict address,
         
         return fd;
     }
+}
+
+void
+Getsockname(int socket, struct sockaddr *restrict address,
+            socklen_t *restrict address_len){
+    if( getsockname(socket, address, address_len) < 0 )
+        error("getsockname error");
+}
+
+void
+Getpeername(int socket, struct sockaddr *restrict address,
+            socklen_t *restrict address_len){
+    if( getpeername(socket, address, address_len) < 0 )
+        error("getpeername error");
 }
 
 void

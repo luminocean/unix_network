@@ -28,6 +28,11 @@ server_process(int socketfd){
     time_t ticks = time(NULL);
     snprintf(buff, sizeof(buff), "%.24s\r\n", ctime(&ticks));
     Write(socketfd, buff, strlen(buff));
+    
+    // 输出客户端的ip地址与端口号
+    char addr_buffer[ADDR_PAIR_LEN];
+    get_peer_socket_info(socketfd, addr_buffer, sizeof(addr_buffer));
+    printf("Client is from %s\n", addr_buffer);
 }
 
 int main(int argc, char* argv[]){
@@ -41,7 +46,8 @@ int main(int argc, char* argv[]){
     // 创建socket
     int listen_fd = Socket(AF_INET, SOCK_STREAM, 0);
     // 绑定到本地地址
-    Bind(listen_fd, (const struct sockaddr*) &socket_addr, sizeof(socket_addr));
+    Bind(listen_fd, (const struct sockaddr *) &socket_addr, sizeof(socket_addr));
+        
     // 开始监听
     Listen(listen_fd, QUEUE_LEN);
     
