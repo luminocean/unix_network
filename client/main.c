@@ -14,6 +14,7 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include "util.h"
+#include "net.h"
 
 
 int CHUNK_SIZE = 64;
@@ -37,30 +38,21 @@ int main(int argc, const char * argv[]) {
     
     
     /// 创建一个[网际][字节流]socket，得到一个文件描述符
-    
-    int socketfd = 0;
-    if ( (socketfd = socket(AF_INET, SOCK_STREAM, 0)) < 0)
-        error("socket error");
-    
+    int socketfd = Socket(AF_INET, SOCK_STREAM, 0);
     
     // 使用socket和地址建立tcp连接，之后套接字描述符就可以使用read读取
-    if (connect(socketfd, (const struct sockaddr*)&socket_addr, sizeof(socket_addr)) < 0)
-        error("Connect error");
+    Connect(socketfd, (const struct sockaddr*)&socket_addr, sizeof(socket_addr));
     
     puts("Connected to server");
+    
     // 使用socket读取
     ssize_t n = 0;
-    while ( (n = read(socketfd, buffer, CHUNK_SIZE)) > 0) {
-        buffer[n] = 0;	// c-style字符串结尾符
+    while ( (n = Read(socketfd, buffer, CHUNK_SIZE, TERM_FILLED)) > 0) {
         if (fputs(buffer, stdout) == EOF) // 输出缓冲内容
             error("fputs error");
     }
     
-    if (n < 0)
-        error("read error");
-    
-    if(close(socketfd) < 0)
-        error("close error");
+    Close(socketfd);
 
     getchar();
     

@@ -9,6 +9,16 @@
 			<key>orderHint</key>
 			<integer>0</integer>
 		</dict>
+		<key>common.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>4</integer>
+		</dict>
+		<key>net.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>3</integer>
+		</dict>
 		<key>server.xcscheme</key>
 		<dict>
 			<key>orderHint</key>
@@ -22,6 +32,16 @@
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
+		<key>7037552C1BC21ED100DFFFC5</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>703755371BC21F5700DFFFC5</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
 		<key>70D505AB1BBD20F70006FD78</key>
 		<dict>
 			<key>primary</key>
