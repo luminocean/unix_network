@@ -16,8 +16,8 @@
 #include "util.h"
 #include "system.h"
 
-int BUFFER_LENGTH = 1024;
-int QUEUE_LEN = 10;
+const int BUFFER_LENGTH = 1024;
+const int QUEUE_LEN = 10;
 
 /// 服务器端处理函数
 void
@@ -36,10 +36,10 @@ server_process(int socketfd){
     
     
     // 读取客户端传来的信息
-    while( Read(socketfd, buff, sizeof(buff), TERM_FILLED) > 0 ){
-        // echo
+    while( Read(socketfd, buff, sizeof(buff)-1, TERM_FILLED) > 0 ){
+        // echo回去
         Write(socketfd, buff, strlen(buff));
-        puts("Echo");
+        printf("echoed: %s", buff);
     }
     
     // 读到0个字节，表示客户端关闭，socket获取EOF状态，服务器处理结束
@@ -72,13 +72,15 @@ int main(int argc, char* argv[]){
         pid_t child_id = 0;
         if( (child_id = Fork()) == 0 ){
             Close(listen_fd); // 子进程用不到监听socket，直接关掉，减少引用计数
+            
             // 服务器端处理
             server_process(connect_fd);
+            
             // 处理完关闭
             Close(connect_fd);
             
             puts("Connection closed");
-            exit(0); // 子进程完成后退出
+            exit(0); // 子进程完成后退出，如果不加处理会造成子进程的僵尸状态
         }else{
             Close(connect_fd); // 新建的socket连接交给子进程处理，父进程这里直接关闭
         }

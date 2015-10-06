@@ -44,9 +44,8 @@ buffered_read(int fd, char *character)
     return 1; // 表示读取了一个字节
 }
 
-/// 读取一行
-/// 如果一行的长度过长，那么仅填满传入的空间，以0结尾
-ssize_t
+
+int
 read_line(int fd, void *buffer_ptr, size_t buffer_size)
 {
     char character = 0; // 每次读取的单个字符
@@ -60,8 +59,10 @@ read_line(int fd, void *buffer_ptr, size_t buffer_size)
             write_ptr++;
             
             // 读到换行符，结束此次行读取
-            if( character == '\n' )
-                break;
+            if( character == '\n' ){
+                return 0;
+            }
+            
         }else if ( char_count == 0 ){
             // 整个文件已经读完了，返回已经读入的字节数
             return i;
@@ -72,5 +73,5 @@ read_line(int fd, void *buffer_ptr, size_t buffer_size)
     }
     
     *write_ptr = 0;
-    return i;
+    return 1; // 返回1表示还没有读到换行符，下次还要接着读取
 }

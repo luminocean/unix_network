@@ -15,8 +15,9 @@
 #include <arpa/inet.h>
 #include "util.h"
 #include "system.h"
+#include "read.h"
 
-#define BUFFER_SIZE 1024
+const int BUFFER_SIZE = 1024;
 
 /// 客户端处理行为
 void
@@ -26,14 +27,19 @@ client_process(int socket_fd){
     // 读入标准输入流
     while (fgets(buffer, sizeof(buffer), stdin) != NULL) {
         // 写入socket连接
-        Write(socket_fd, buffer, sizeof(buffer));
+        Write(socket_fd, buffer, strlen(buffer));
         
         // 读取服务器回传的socket数据
-        // 现阶段只读一次
-        Read(socket_fd, buffer, sizeof(buffer), TERM_FILLED);
-        // 输出缓冲内容
-        if (fputs(buffer, stdout) == EOF)
-            error("fputs error");
+        int read_loops = 0; // 是否继续读行
+        do{
+            read_loops = read_line(socket_fd, buffer, sizeof(buffer));
+            // 输出缓冲内容
+            if (fputs(buffer, stdout) == EOF)
+                error("fputs error");
+
+        }while(read_loops);
+        
+        // Read(socket_fd, buffer, sizeof(buffer), TERM_FILLED); // 原来只读一次的方案
     }
 }
 
