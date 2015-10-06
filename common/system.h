@@ -11,10 +11,6 @@
 
 #include <stdio.h>
 
-#define TERM_SKIP 0 // 仅在缓冲区未满时填充0终结符
-#define TERM_FILLED 1 // 在填充缓冲区的最后添加0终结符，方便直接输出
-
-
 /// 打开socket，获取socket的文件描述符
 /// 返回socket文件描述符
 int
@@ -24,6 +20,9 @@ Socket(int domain, int type, int protocol);
 void
 Connect(int socket, const struct sockaddr *address,
         socklen_t address_len);
+
+#define TERM_SKIP 0 // 仅在缓冲区未满时填充0终结符
+#define TERM_FILLED 1 // 在填充缓冲区的最后添加0终结符，方便直接输出
 
 /// 读取socket内容，尽量填满传入的buf缓冲区
 /// 可以通过terminate参数选择要不要给填充过的缓冲区结尾添加0终结符

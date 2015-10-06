@@ -25,14 +25,24 @@ server_process(int socketfd){
     char buff[BUFFER_LENGTH];
     
     // 写入时间响应
-    time_t ticks = time(NULL);
+    /* time_t ticks = time(NULL);
     snprintf(buff, sizeof(buff), "%.24s\r\n", ctime(&ticks));
-    Write(socketfd, buff, strlen(buff));
+    Write(socketfd, buff, strlen(buff));*/
     
     // 输出客户端的ip地址与端口号
     char addr_buffer[ADDR_PAIR_LEN];
     get_peer_socket_info(socketfd, addr_buffer, sizeof(addr_buffer));
     printf("Client is from %s\n", addr_buffer);
+    
+    
+    // 读取客户端传来的信息
+    while( Read(socketfd, buff, sizeof(buff), TERM_FILLED) > 0 ){
+        // echo
+        Write(socketfd, buff, strlen(buff));
+        puts("Echo");
+    }
+    
+    // 读到0个字节，表示客户端关闭，socket获取EOF状态，服务器处理结束
 }
 
 int main(int argc, char* argv[]){
