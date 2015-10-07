@@ -25,11 +25,10 @@ Connect(int socket, const struct sockaddr *address,
 #define TERM_FILLED 1 // 在填充缓冲区的最后添加0终结符，方便直接输出
 
 /// 读取socket内容，尽量填满传入的buf缓冲区
-/// 可以通过terminate参数选择要不要给填充过的缓冲区结尾添加0终结符
-/// 返回读取的字节数，一定大于等于0，小于0直接退出进程
+/// 返回读取的字节数，一定大于等于0，小于0会直接退出进程
 /// 等于0时表示读取结束
 ssize_t
-Read(int fildes, void *buf, size_t nbyte, int terminate);
+Read(int fildes, void *buf, size_t nbyte);
 
 /// 将缓冲区内容写入socket
 ssize_t

@@ -52,9 +52,10 @@ server_process(int socketfd){
     
     
     // 读取客户端传来的信息
-    while( Read(socketfd, buff, sizeof(buff)-1, TERM_FILLED) > 0 ){
+    ssize_t n;
+    while( (n = Read(socketfd, buff, sizeof(buff))) > 0 ){
         // echo回去
-        Write(socketfd, buff, strlen(buff));
+        Write(socketfd, buff, n);
     }
     
     // 读到0个字节，表示客户端关闭，socket获取EOF状态，服务器处理结束

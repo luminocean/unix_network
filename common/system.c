@@ -29,16 +29,10 @@ Connect(int socket, const struct sockaddr *address, socklen_t address_len){
 }
 
 ssize_t
-Read(int fildes, void *buf, size_t nbyte, int terminate){
-    if( terminate == TERM_FILLED )
-        nbyte--;
-    
+Read(int fildes, void *buf, size_t nbyte){
     ssize_t n = read(fildes, buf, nbyte);
     if( n < 0 )
         error("read error");
-    
-    if( n > 0 )
-        ((char *)buf)[n] = 0;
     
     return n;
 }

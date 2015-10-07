@@ -17,45 +17,8 @@
 #include "util.h"
 #include "system.h"
 #include "read.h"
-
-const int BUFFER_SIZE = 1024;
-
-/// 客户端处理行为
-void
-client_process(int socket_fd){
-    char buffer[BUFFER_SIZE];
-    
-    // 读入标准输入流
-    while (fgets(buffer, sizeof(buffer), stdin) != NULL) {
-        // 写入socket连接
-        Write(socket_fd, buffer, strlen(buffer));
-        
-        // 读取服务器回传的socket数据
-        int read_flag = 0; // 是否继续读行
-        do{
-            read_flag = read_line(socket_fd, buffer, sizeof(buffer));
-            if( read_flag == READ_ERROR )
-                error("read line error");
-            if( read_flag == READ_EOF )
-                error("server terminated");
-            
-            // 输出缓冲内容
-            if (fputs(buffer, stdout) == EOF)
-                error("fputs error");
-
-        }while(read_flag == READ_CONTINUE); // 也就是说只有返回了READ_LINE才会正常离开循环
-        
-        // Read(socket_fd, buffer, sizeof(buffer), TERM_FILLED); // 原来只读一次的方案
-    }
-}
-
-/// SIGPIPE信号处理
-/// 当向RST状态的socket写入数据时发生
-/// 用于处理服务器进程崩溃或者服务器重启后丢失原有会话的情形
-void
-sigpipe_handler(int signo){
-    error("sigpipe error");
-}
+#include "process.h"
+#include "signal_handler.h"
 
 int
 main(int argc, const char * argv[]) {
