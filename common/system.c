@@ -97,6 +97,12 @@ Close(int fildes){
         error("close error");
 }
 
+void
+Shutdown(int socket, int how){
+    if( shutdown(socket, how) < 0 )
+        error("shutdown error");
+}
+
 pid_t
 Fork(){
     pid_t child_id = fork();

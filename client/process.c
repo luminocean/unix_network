@@ -7,6 +7,7 @@
 //
 
 #include <sys/select.h>
+#include <sys/socket.h>
 #include <string.h>
 #include "process.h"
 #include "system.h"
@@ -30,6 +31,8 @@ talk_to_server(int src_fd, int socket_fd){
     char buffer[BUFFER_SIZE];
     //////
     
+    int stdin_eof = 0; // 标准输入是否已经输入完毕
+    
     int limit_fd = 0; // 监控的fd集合中最大的fd+1
     while(1){
         FD_SET(src_fd, &fdset); // 登记要监控的文件描述符
@@ -42,33 +45,31 @@ talk_to_server(int src_fd, int socket_fd){
         // 服务器传来的fin报文进程是没办法第一时间知道的，而是要等到接触stdin阻塞且往socket里面写的时候才会得到RST响应，这就有点晚了，因此使用select可以及时获知对面服务器关闭的信息
         select(limit_fd, &fdset, NULL, NULL, NULL);
         
+        ssize_t n;
         // 源fd可读
         if( FD_ISSET(src_fd, &fdset) ){
-            if(fgets(buffer, sizeof(buffer), stdin) == NULL)
-                return; // 如果源fd读取返回NULL，表示已经读完，客户端主要处理结束
+            // 读到EOF
+            if( (n = Read(src_fd, buffer, sizeof(buffer))) == 0 ){
+                stdin_eof = 1;
+                Shutdown(socket_fd, SHUT_WR); // stdin已经读完了，也就没有东西可以往socket里面写了
+                FD_CLR(src_fd, &fdset); // 不再监听stdin
+                continue;
+            }
             
-            // 写入socket连接
-            Write(socket_fd, buffer, strlen(buffer));
+            // 写入socket连接，注意此时读取并写入的内容里包括换行符
+            Write(socket_fd, buffer, n);
         }
         
         // socket可读
         if( FD_ISSET(socket_fd, &fdset) ){
-            // 读取服务器回传的socket数据
-            int read_flag = 0; // 是否继续读行
-            do{
-                read_flag = read_line(socket_fd, buffer, sizeof(buffer));
-                if( read_flag == READ_ERROR )
-                    error("read line error");
-                if( read_flag == READ_EOF )
-                    error("server terminated");
-                
-                // 输出缓冲内容
-                if (fputs(buffer, stdout) == EOF)
-                    error("fputs error");
-                
-            }while(read_flag == READ_CONTINUE); // 也就是说只有返回了READ_LINE才会正常离开循环
+            // 服务器端fin
+            if( (n = Read(socket_fd, buffer, sizeof(buffer))) == 0 ){
+                if( stdin_eof )
+                    return; // 我方终止在前，正常退出
+                error("Server side terminated unexpectly"); // 否则说明是服务器端自行退出了
+            }
             
-            // Read(socket_fd, buffer, sizeof(buffer), TERM_FILLED); // 原来只读一次的方案
+            Write(fileno(stdout), buffer, n);
         }
     }
 }

@@ -61,6 +61,10 @@ Getpeername(int socket, struct sockaddr *restrict address,
 void
 Close(int fildes);
 
+/// 以某种方式关闭己方的socket连接
+void
+Shutdown(int socket, int how);
+
 /// fork进程
 pid_t
 Fork();
