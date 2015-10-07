@@ -98,7 +98,7 @@ int main(int argc, char* argv[]){
             Close(connect_fd);
             
             puts("Connection closed");
-            exit(0); // 子进程完成后退出，如果不加处理会造成子进程的僵尸状态
+            exit(0); // 子进程完成后退出，向主进程发送SIGCHILD信号
         }else{
             Close(connect_fd); // 新建的socket连接交给子进程处理，父进程这里直接关闭
         }

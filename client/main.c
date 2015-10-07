@@ -10,6 +10,7 @@
 #include <unistd.h>
 #include <string.h>
 #include <errno.h>
+#include <signal.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
@@ -30,21 +31,37 @@ client_process(int socket_fd){
         Write(socket_fd, buffer, strlen(buffer));
         
         // 读取服务器回传的socket数据
-        int read_loops = 0; // 是否继续读行
+        int read_flag = 0; // 是否继续读行
         do{
-            read_loops = read_line(socket_fd, buffer, sizeof(buffer));
+            read_flag = read_line(socket_fd, buffer, sizeof(buffer));
+            if( read_flag == READ_ERROR )
+                error("read line error");
+            if( read_flag == READ_EOF )
+                error("server terminated");
+            
             // 输出缓冲内容
             if (fputs(buffer, stdout) == EOF)
                 error("fputs error");
 
-        }while(read_loops);
+        }while(read_flag == READ_CONTINUE); // 也就是说只有返回了READ_LINE才会正常离开循环
         
         // Read(socket_fd, buffer, sizeof(buffer), TERM_FILLED); // 原来只读一次的方案
     }
 }
 
+/// SIGPIPE信号处理
+/// 当向RST状态的socket写入数据时发生
+/// 用于处理服务器进程崩溃或者服务器重启后丢失原有会话的情形
+void
+sigpipe_handler(int signo){
+    error("sigpipe error");
+}
+
 int
 main(int argc, const char * argv[]) {
+    // 设置信号处理
+    setup_signal(SIGPIPE, sigpipe_handler);
+    
     // 创建socket地址结构体
     struct sockaddr_in socket_addr; // internet风格的socket地址
     bzero(&socket_addr, sizeof(socket_addr)); // 清空结构体

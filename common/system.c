@@ -113,10 +113,10 @@ Fork(){
 }
 
 void
-setup_signal(int signo, signal_handler *handler){
+setup_signal(int signo, signal_handler handler){
     // 初始化sigaction结构
     struct sigaction act;
-    act.sa_handler = handler;
+    act.sa_handler= *handler;
     sigemptyset(&act.sa_mask);
     act.sa_flags = 0;
     

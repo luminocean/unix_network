@@ -11,7 +11,12 @@
 
 #include <stdio.h>
 
-const static int READ_BUFFER_SIZE = 64;
+#define READ_BUFFER_SIZE 64
+#define READ_CONTINUE 1
+#define READ_LINE 0
+#define READ_ERROR -1
+#define READ_EOF -2
+
 
 /// 读取一行
 /// 如果一行的长度过长，那么仅填满传入的空间，以0结尾

@@ -71,7 +71,7 @@ typedef void signal_handler(int);
 
 /// 设置信号处理
 void
-setup_signal(int signo, signal_handler *handler);
+setup_signal(int signo, signal_handler handler);
 
 
 #endif /* net_h */

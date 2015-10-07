@@ -60,18 +60,18 @@ read_line(int fd, void *buffer_ptr, size_t buffer_size)
             
             // 读到换行符，结束此次行读取
             if( character == '\n' ){
-                return 0;
+                return READ_LINE;
             }
             
         }else if ( char_count == 0 ){
-            // 整个文件已经读完了，返回已经读入的字节数
-            return i;
+            // 整个文件已经读完了
+            return READ_EOF;
         }else{
             // 读取错误
-            return -1;
+            return READ_ERROR;
         }
     }
     
     *write_ptr = 0;
-    return 1; // 返回1表示还没有读到换行符，下次还要接着读取
+    return READ_CONTINUE; // 没有读到换行符，下次接着读取
 }
