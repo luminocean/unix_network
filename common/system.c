@@ -9,6 +9,7 @@
 #include <unistd.h>
 #include <errno.h>
 #include <sys/socket.h>
+#include <signal.h>
 #include "system.h"
 #include "util.h"
 
@@ -109,6 +110,18 @@ Fork(){
         error("fork error");
     
     return child_id;
+}
+
+void
+setup_signal(int signo, signal_handler *handler){
+    // 初始化sigaction结构
+    struct sigaction act;
+    act.sa_handler = handler;
+    sigemptyset(&act.sa_mask);
+    act.sa_flags = 0;
+    
+    if( sigaction(signo, &act, NULL) < 0 )
+        error("sigaction error");
 }
 
 

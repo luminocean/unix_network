@@ -10,6 +10,7 @@
 #include <time.h>
 #include <string.h>
 #include <unistd.h>
+#include <signal.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
@@ -18,6 +19,21 @@
 
 const int BUFFER_LENGTH = 1024;
 const int QUEUE_LEN = 10;
+
+/// 子进程退出信号处理
+void
+sigchild_handler(int signo){
+    pid_t pid;
+    int stat;
+    
+    // 处理所有子进程的僵尸进程，避免遗漏
+    while( (pid = waitpid(-1, &stat, WNOHANG)) > 0 ){
+        printf("Child %d terminated\n", pid);
+        fflush(stdout);
+    }
+    
+    return;
+}
 
 /// 服务器端处理函数
 void
@@ -39,13 +55,15 @@ server_process(int socketfd){
     while( Read(socketfd, buff, sizeof(buff)-1, TERM_FILLED) > 0 ){
         // echo回去
         Write(socketfd, buff, strlen(buff));
-        printf("echoed: %s", buff);
     }
     
     // 读到0个字节，表示客户端关闭，socket获取EOF状态，服务器处理结束
 }
 
 int main(int argc, char* argv[]){
+    // 准备信号处理
+    setup_signal(SIGCHLD, sigchild_handler);
+    
     struct sockaddr_in socket_addr;
     bzero(&socket_addr, sizeof(socket_addr));
 
