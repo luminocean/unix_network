@@ -51,6 +51,8 @@ talk_to_server(int src_fd, int socket_fd){
             // 读到EOF
             if( (n = Read(src_fd, buffer, sizeof(buffer))) == 0 ){
                 stdin_eof = 1;
+                // 向服务器端发送fin报文，使得服务器端读到EOF，从而在服务器端关闭处理进程
+                // 进而使得我方socket读到EOF，也随着关闭socket，退出客户端进程
                 Shutdown(socket_fd, SHUT_WR); // stdin已经读完了，也就没有东西可以往socket里面写了
                 FD_CLR(src_fd, &fdset); // 不再监听stdin
                 continue;
