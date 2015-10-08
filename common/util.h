@@ -14,6 +14,8 @@
 
 #define ADDR_PAIR_LEN 3*4+3+1+5+1 // IP:PORT/0长度
 
+#define MAX(a,b) ( (a) > (b) ? (a) : (b) )
+
 /// 打印出错误信息，然后退出进程
 void error(const char *str);
 

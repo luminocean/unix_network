@@ -50,7 +50,6 @@ server_process(int socketfd){
     get_peer_socket_info(socketfd, addr_buffer, sizeof(addr_buffer));
     printf("Client is from %s\n", addr_buffer);
     
-    
     // 读取客户端传来的信息
     ssize_t n;
     while( (n = Read(socketfd, buff, sizeof(buff))) > 0 ){

@@ -7,6 +7,7 @@
 //
 
 #include <strings.h>
+#include <errno.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
@@ -17,7 +18,7 @@ typedef int (*GETSOCKETNAME) (int, struct sockaddr *restrict, socklen_t *restric
 
 void error(const char *str)
 {
-    fprintf(stderr, "%s\n", str);
+    fprintf(stderr, "%s : %s\n", str, strerror(errno));
     exit(1);
 }
 

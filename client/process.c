@@ -9,12 +9,11 @@
 #include <sys/select.h>
 #include <sys/socket.h>
 #include <string.h>
+#include <unistd.h>
 #include "process.h"
 #include "system.h"
 #include "read.h"
 #include "util.h"
-
-#define MAX(a,b) ( (a) > (b) ? (a) : (b) )
 
 const int BUFFER_SIZE = 1024;
 
@@ -46,8 +45,9 @@ talk_to_server(int src_fd, int socket_fd){
         select(limit_fd, &fdset, NULL, NULL, NULL);
         
         ssize_t n;
+        
         // 源fd可读
-        if( FD_ISSET(src_fd, &fdset) ){
+        if( FD_ISSET(src_fd, &fdset) && !stdin_eof ){ // 检查EOF是为了防止出现多个EOF
             // 读到EOF
             if( (n = Read(src_fd, buffer, sizeof(buffer))) == 0 ){
                 stdin_eof = 1;

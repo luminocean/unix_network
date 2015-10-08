@@ -39,9 +39,25 @@ Read(int fildes, void *buf, size_t nbyte){
 
 ssize_t
 Write(int fildes, const void *buf, size_t nbyte){
+    size_t nleft = nbyte; // 剩余要写的字节数
+    const char *ptr = buf;
+    
     ssize_t n= 0;
-    if((n = write(fildes, buf, nbyte))<0)
-        error("Writing failed");
+    while( nleft > 0 ){
+        // 将从ptr开始的nleft个字节写入目的文件描述符
+        if((n = write(fildes, ptr, nleft)) <= 0){ // 如果写入异常
+            if( errno == EINTR ){
+                continue; // EINTR中断没有关系，继续
+            }
+            
+            error("write error");
+        }
+        
+        
+        // 成功写入，更新计数器和指针位置
+        nleft -= n;
+        ptr += n;
+    }
     
     return n;
 }
@@ -99,8 +115,10 @@ Close(int fildes){
 
 void
 Shutdown(int socket, int how){
-    if( shutdown(socket, how) < 0 )
+    if( shutdown(socket, how) < 0 ){
         error("shutdown error");
+    }
+    
 }
 
 pid_t
